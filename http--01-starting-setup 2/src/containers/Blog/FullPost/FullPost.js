@@ -8,31 +8,41 @@ class FullPost extends Component {
     loadedPost: null,
   };
 
+  componentDidMount() {
+    console.log(this.props);
+    this.loadData();
+  }
+
   componentDidUpdate() {
-    if (this.props.id) {
+    this.loadData();
+  }
+
+  loadData() {
+    if (this.props.match.params.id) {
       if (
         !this.state.loadedPost ||
-        (this.state.loadedPost && this.state.loadedPost.id !== this.props.id)
+        (this.state.loadedPost && this.state.loadedPost.id !== this.props.match.params.id)
       ) {
-              axios
-                .get(
-                  "https://jsonplaceholder.typicode.com/posts/" + this.props.id
-                )
-                .then((response) => {
-                  this.setState({ loadedPost: response.data });
-                  console.log(response);
-                });
+        axios
+          .get(
+            "https://jsonplaceholder.typicode.com/posts/" +
+              this.props.match.params.id
+          )
+          .then((response) => {
+            this.setState({ loadedPost: response.data });
+            console.log(response);
+          });
       }
-
     }
   }
 
   deletePostHandler = () => {
-axios.delete('https://jsonplaceholder.typicode.com/posts/' + this.props.id)
-.then(response => {
-  console.log(response)
-});
-  }
+    axios
+      .delete("https://jsonplaceholder.typicode.com/posts/" + this.props.id)
+      .then((response) => {
+        console.log(response);
+      });
+  };
 
   render() {
     let post = <p style={{ textAlign: "center" }}>Please select a Post!</p>;
@@ -45,7 +55,9 @@ axios.delete('https://jsonplaceholder.typicode.com/posts/' + this.props.id)
           <h1>{this.state.loadedPost.title}</h1>
           <p>{this.state.loadedPost.body}</p>
           <div className="Edit">
-            <button onClick={this.deletePostHandler} className="Delete">Delete</button>
+            <button onClick={this.deletePostHandler} className="Delete">
+              Delete
+            </button>
           </div>
         </div>
       );
